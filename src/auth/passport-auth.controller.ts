@@ -12,6 +12,7 @@ import {
 
 import { AuthService } from './auth.service';
 import { AuthGuard } from './guards/auth.guards';
+import { PassportLocalGuard } from './guards/passport-local-guards';
 import { PassportJwtAuthGuard } from './guards/passport-jwt-guards';
 
 @Controller('auth-v2')
@@ -19,10 +20,10 @@ export class PassportAuthController {
   constructor(private authService: AuthService) {}
 
   @HttpCode(HttpStatus.OK)
-  @Post('Login')
-  @UseGuards()
+  @Post('login')
+  @UseGuards(PassportLocalGuard)
   login(@Request() request) {
-    return this.authService.signIn(request.user)
+    return this.authService.signIn(request.user);
   }
 
   @UseGuards(AuthGuard)

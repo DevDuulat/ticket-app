@@ -20,12 +20,14 @@ export class AuthService {
       throw new UnauthorizedException();
     }
 
-    return this.signIn(user)
+    return this.signIn(user);
   }
 
-  async validateUser(input: AuthInput): Promise<SignInData | null> {
+  async validateUser(input: {
+    username: string;
+    password: string;
+  }): Promise<SignInData | null> {
     const user = await this.usersService.findUserByName(input.username);
-
     if (user && user.password === input.password) {
       return {
         userId: user.userId,
