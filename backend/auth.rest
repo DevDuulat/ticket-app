@@ -1,0 +1,11 @@
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+  "username":"Alice",
+  "password": "topsecret"
+}
+
+###
+GET http://localhost:3000/auth/me
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInVzZXJuYW1lIjoiQWxpY2UiLCJpYXQiOjE3NTA1MzAwMDcsImV4cCI6MTc1MDYxNjQwN30.5lQcqf6WyzTvKCviD3pN20wm_F2DenWy7a4NwsUZXnU
