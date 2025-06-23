@@ -11,13 +11,13 @@ import { JwtStrategy } from './strategies/jwt-strategy';
 
 @Module({
   providers: [AuthService, LocalStrategy, JwtStrategy],
-  controllers: [AuthController , PassportAuthController],
+  controllers: [AuthController, PassportAuthController],
   imports: [
     UsersModule,
     JwtModule.register({
       global: true,
-      secret: JWT_SECRET,
-      signOptions: { expiresIn: '1d' },
+      secret: process.env.JWT_SECRET,
+      signOptions: { expiresIn: '1h' },
     }),
     PassportModule,
   ],
