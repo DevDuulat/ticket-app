@@ -7,8 +7,10 @@ import {
   Request,
   Patch,
   Param,
+  ParseIntPipe,
+  Req,
 } from '@nestjs/common';
-import { TicketsService } from './tickets.service';
+import { TicketsService, Ticket } from './tickets.service';
 import { PassportJwtAuthGuard } from 'src/auth/guards/passport-jwt-guards';
 import { Roles } from 'src/auth/roles.decorator';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
@@ -43,13 +45,17 @@ export class TicketsController {
   }
 
   @Patch(':id/reassign')
-  @UseGuards(RolesGuard)
-  @Roles('SUPERVISOR')
-  reassign(
-    @Param('id') id: string,
-    @Body('userId') userId: number,
-    @Request() req,
+  reassignTicket(
+    @Param('id', ParseIntPipe) id: number,
+    @Body('newUserId', ParseIntPipe) newUserId: number,
+    @Req() req: any,
   ) {
-    return this.ticketsService.reassignTicket(+id, userId, req.user.role);
+    const userRole = req.user.role;
+    return this.ticketsService.reassignTicket(id, newUserId, userRole);
+  }
+
+  @Get(':id')
+  getTicket(@Param('id') id: string): Promise<Ticket> {
+    return this.ticketsService.getTicketById(+id);
   }
 }

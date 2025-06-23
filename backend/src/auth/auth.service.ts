@@ -26,21 +26,23 @@ export class AuthService {
   async validateUser(input: {
     username: string;
     password: string;
-  }): Promise<SignInData | null> {
+  }): Promise<(SignInData & { role: string }) | null> {
     const user = await this.usersService.findUserByName(input.username);
     if (user && user.password === input.password) {
       return {
         userId: user.userId,
         username: user.username,
+        role: user.role,
       };
     }
     return null;
   }
 
-  async signIn(user: SignInData): Promise<AuthResult> {
+  async signIn(user: SignInData & { role: string }): Promise<AuthResult> {
     const tokenPayload = {
       sub: user.userId,
       username: user.username,
+      role: user.role,
     };
 
     const accessToken = await this.jwtService.signAsync(tokenPayload);

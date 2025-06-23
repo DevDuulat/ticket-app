@@ -1,12 +1,28 @@
-import { Injectable, ForbiddenException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  ForbiddenException,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { TicketStatus } from '@prisma/client';
+
+export interface Ticket {
+  id: number;
+  subscriber: string;
+  description: string;
+  status: TicketStatus;
+}
 
 @Injectable()
 export class TicketsService {
   constructor(private prisma: PrismaService) {}
 
-  createTicket(dto: { title: string; description: string; subscriber: string; userId: number }) {
+  createTicket(dto: {
+    title: string;
+    description: string;
+    subscriber: string;
+    userId: number;
+  }) {
     return this.prisma.ticket.create({
       data: {
         title: dto.title,
@@ -27,7 +43,9 @@ export class TicketsService {
   }
 
   async addComment(ticketId: number, content: string, authorId: number) {
-    const ticket = await this.prisma.ticket.findUnique({ where: { id: ticketId } });
+    const ticket = await this.prisma.ticket.findUnique({
+      where: { id: ticketId },
+    });
     if (!ticket) throw new NotFoundException('Ticket not found');
 
     return this.prisma.comment.create({
@@ -39,14 +57,34 @@ export class TicketsService {
     });
   }
 
-  async updateStatus(ticketId: number, status: TicketStatus) {
-    return this.prisma.ticket.update({
-      where: { id: ticketId },
-      data: { status },
+  async getTicketById(id: number): Promise<Ticket> {
+    const ticket = await this.prisma.ticket.findUnique({
+      where: { id },
+      include: {
+        assignedTo: true,
+        comments: {
+          include: { author: true },
+          orderBy: { createdAt: 'asc' },
+        },
+      },
     });
+    if (!ticket) throw new NotFoundException(`Тикет с id ${id} не найден`);
+    return ticket;
   }
 
-  async reassignTicket(ticketId: number, newUserId: number, currentUserRole: string) {
+  async updateStatus(id: number, status: TicketStatus) {
+    const ticket = await this.prisma.ticket.update({
+      where: { id },
+      data: { status },
+    });
+    return ticket;
+  }
+
+  async reassignTicket(
+    ticketId: number,
+    newUserId: number,
+    currentUserRole: string,
+  ) {
     if (currentUserRole !== 'SUPERVISOR') {
       throw new ForbiddenException('Only supervisors can reassign tickets');
     }
@@ -54,6 +92,7 @@ export class TicketsService {
     return this.prisma.ticket.update({
       where: { id: ticketId },
       data: { assignedToId: newUserId },
+      include: { assignedTo: true },
     });
   }
 }

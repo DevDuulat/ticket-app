@@ -1,5 +1,8 @@
 <script setup>
 import { ref, computed, onMounted } from "vue";
+import { useRouter } from "vue-router";
+const router = useRouter();
+
 import axios from "axios";
 
 const tickets = ref([]);
@@ -11,6 +14,10 @@ const searchQuery = ref("");
 const selectedStatus = ref("");
 const searchId = ref("");
 const searchSubscriber = ref("");
+
+function goToTicket(id) {
+  router.push({ name: "TicketDetail", params: { id } });
+}
 
 const fetchTickets = async () => {
   try {
@@ -209,13 +216,15 @@ onMounted(() => {
                   Имя абонента
                 </th>
                 <th class="border border-gray-600 p-3 text-left">Статус</th>
+                <th class="border border-gray-600 p-3 text-left">Оператор</th>
               </tr>
             </thead>
             <tbody>
               <tr
                 v-for="ticket in filteredTickets"
                 :key="ticket.id"
-                class="hover:bg-gray-700 transition-colors"
+                class="hover:bg-gray-700 cursor-pointer transition-colors"
+                @click="goToTicket(ticket.id)"
               >
                 <td class="border border-gray-600 p-3 text-gray-100">
                   {{ ticket.id }}
@@ -228,6 +237,9 @@ onMounted(() => {
                 </td>
                 <td class="border border-gray-600 p-3 text-gray-100">
                   {{ ticket.status }}
+                </td>
+                <td class="border border-gray-600 p-3 text-gray-100">
+                  {{ ticket.assignedTo?.name || "—" }}
                 </td>
               </tr>
             </tbody>
