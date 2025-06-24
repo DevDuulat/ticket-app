@@ -84,4 +84,20 @@ JWT_SECRET=your_jwt_secret
 
 ---
 
+## Страница входа 
+![image](https://github.com/user-attachments/assets/400c52fb-c239-4419-ace7-521dd31413b1)
+
+## Страница тикетов 
+![image](https://github.com/user-attachments/assets/f9b7bb9d-aec0-467a-b83c-38136dc5baf6)
+
+## Страница тикета 
+![image](https://github.com/user-attachments/assets/8c9190fa-324c-4b48-abcf-c0b9da4efb45)
+
+## Создание тикетов
+![image](https://github.com/user-attachments/assets/9e974da8-7c65-4b63-b95f-74bcdcb25b1c)
+
+
+
+
+
 
