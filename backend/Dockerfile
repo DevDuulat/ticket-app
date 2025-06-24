@@ -1,24 +1,32 @@
-# Этап 1: Установка зависимостей и сборка Prisma клиента
+# Dockerfile для backend
 FROM node:20-alpine AS builder
 
-# Рабочая директория
 WORKDIR /app
+
+COPY package*.json ./
+COPY prisma ./prisma/
+
+RUN npm install
 
 COPY . .
 
-# Генерируем Prisma Client
-RUN yarn prisma generate
+RUN npm run build
 
-# Этап 2: Запуск приложения
-FROM node:20-alpine
+FROM node:20-alpine AS production
 
 WORKDIR /app
 
-# Копируем зависимости и билд с предыдущего этапа
-COPY --from=builder /app /app
+COPY package*.json ./
+COPY prisma ./prisma/
 
-# Открываем порт
+RUN npm install --omit=dev
+
+COPY --from=builder /app/dist ./dist
+
+# Убедитесь, что Prisma клиент сгенерирован
+RUN npx prisma generate
+
 EXPOSE 3000
 
-# Команда для запуска приложения
-CMD ["yarn", "start:dev"]
+# Выполняем миграции и сидинг при запуске контейнера
+CMD ["sh", "-c", "npx prisma migrate deploy && npx prisma db seed && npm run start:prod"]

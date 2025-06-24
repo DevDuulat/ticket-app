@@ -49,14 +49,13 @@ const filteredTickets = computed(() => {
 const fetchTickets = async () => {
   try {
     const token = localStorage.getItem("token");
-    console.error(token);
+
     const res = await axios.get("/api/tickets", {
       headers: { Authorization: `Bearer ${token}` },
     });
     tickets.value = res.data;
   } catch (err) {
     error.value = "Ошибка при загрузке тикетов";
-    console.error(err);
   } finally {
     loading.value = false;
   }

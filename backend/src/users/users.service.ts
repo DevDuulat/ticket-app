@@ -1,4 +1,6 @@
 import { Injectable } from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service'; // путь поправь по своему проекту
+import { Role } from '@prisma/client';
 
 export type User = {
   userId: number;
@@ -9,6 +11,8 @@ export type User = {
 
 @Injectable()
 export class UsersService {
+  constructor(private readonly prisma: PrismaService) {}
+
   private readonly users: User[] = [
     {
       userId: 1,
@@ -40,9 +44,19 @@ export class UsersService {
     );
   }
 
-  async findOperators(): Promise<Omit<User, 'password'>[]> {
-    return this.users
-      .filter((user) => user.role === 'OPERATOR')
-      .map(({ password, ...user }) => user);
+  async findOperators() {
+    const operators = await this.prisma.user.findMany({
+      where: { role: Role.OPERATOR },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        role: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+
+    return operators;
   }
 }
