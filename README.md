@@ -93,6 +93,10 @@ JWT_SECRET=your_jwt_secret
 ## Страница тикета 
 ![image](https://github.com/user-attachments/assets/8c9190fa-324c-4b48-abcf-c0b9da4efb45)
 
+## Создание тикетов
+![image](https://github.com/user-attachments/assets/9e974da8-7c65-4b63-b95f-74bcdcb25b1c)
+
+
 
 
 
