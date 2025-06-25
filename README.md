@@ -26,7 +26,20 @@ cd ticket-app
 git checkout dev
 ````
 
-### 2. Сборка и запуск
+### 2. Создание .env файла для backend
+
+```bash
+cd backend
+touch .env
+```
+
+## Содержимое .env:
+
+DATABASE_URL=postgresql://postgres:postgres@db:5432/ticket_db?schema=public
+JWT_SECRET=h1wHcIr8vxltVcyMGjtPWrfgjkZgBTSirhyNJwPcUFOQ6PZtw9Cn2vRye+DB9SF4
+
+
+### 3. Сборка и запуск
 
 ```bash
 docker-compose build
@@ -34,7 +47,7 @@ docker-compose up
 ```
 
 ---
-##  Доступ к приложению
+## 4. Доступ к приложению
 
 Откройте в браузере:
 
@@ -42,7 +55,7 @@ docker-compose up
 http://localhost:8080/
 ```
 
-### Данные для входа
+### 5. Данные для входа
 
 ```txt
 Логин:   alice@mail.ru  
@@ -51,7 +64,7 @@ http://localhost:8080/
 
 ---
 
-## Полезные команды
+## 6. Полезные команды
 
 Если вы работаете с backend вручную:
 
@@ -71,18 +84,7 @@ npx prisma generate
 
 ---
 
-##  Переменные окружения
 
-Для локальной разработки переменные уже прописаны в `docker-compose.yml`.
-
-Если нужно использовать `.env`, то пример:
-
-```env
-DATABASE_URL=postgresql://postgres:postgres@db:5432/ticket_db?schema=public
-JWT_SECRET=your_jwt_secret
-```
-
----
 
 ## Страница входа 
 ![image](https://github.com/user-attachments/assets/400c52fb-c239-4419-ace7-521dd31413b1)
