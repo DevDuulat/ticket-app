@@ -187,16 +187,16 @@
                     >Оператор:</label
                   >
                   <select
-                    v-model="selectedOperatorId"
+                    v-model.number="selectedOperatorId"
                     class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white"
                   >
-                    <option value="" disabled>Выберите оператора</option>
+                    <option value="">Выберите оператора</option>
                     <option
                       v-for="operator in operators"
-                      :key="operator.userId"
-                      :value="operator.userId"
+                      :key="operator.id"
+                      :value="operator.id"
                     >
-                      {{ operator.username }} ({{ operator.role }})
+                      {{ operator.name }} ({{ operator.role }})
                     </option>
                   </select>
                 </div>
@@ -211,7 +211,6 @@
                   <button
                     @click="reassignToOperator"
                     class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition duration-200"
-                    :disabled="!selectedOperatorId"
                   >
                     Подтвердить
                   </button>
@@ -263,8 +262,12 @@ async function fetchOperators() {
     console.error("Ошибка загрузки операторов:", error);
   }
 }
+
 async function reassignToOperator() {
-  if (!selectedOperatorId.value) return;
+  console.log(
+    "НАЖАТИЕ НА ПОДТВЕРДИТЬ, selectedOperatorId:",
+    selectedOperatorId.value
+  );
 
   try {
     const token = localStorage.getItem("token");
@@ -284,7 +287,9 @@ async function reassignToOperator() {
 
     showOperatorModal.value = false;
     selectedOperatorId.value = null;
-    await fetchTicket(); // обновим инфу о тикете
+    console.log("Переназначение завершено, обновляем тикет...");
+    await fetchTicket();
+    console.log("Тикет после обновления:", ticket.value);
   } catch (error) {
     console.error("Ошибка при переназначении тикета:", error);
   }
