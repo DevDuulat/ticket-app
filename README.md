@@ -60,8 +60,8 @@ http://localhost:8080/
 ### 6. Данные для входа
 
 ```txt
-Логин:   alice@mail.ru  
-Пароль:  alice@mail.ru
+Логин:   admin@example.com 
+Пароль:  password123
 ```
 
 ---
