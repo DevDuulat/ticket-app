@@ -1,6 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from 'src/users/users.service';
+import { compare } from 'bcrypt';
 
 type AuthInput = { username: string; password: string };
 type SignInData = { userId: number; username: string };
@@ -17,24 +18,29 @@ export class AuthService {
     const user = await this.validateUser(input);
 
     if (!user) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('Неверный логин или пароль');
     }
 
     return this.signIn(user);
   }
 
-  async validateUser(input: {
+  async validateUser({
+    username,
+    password,
+  }: {
     username: string;
     password: string;
-  }): Promise<(SignInData & { role: string }) | null> {
-    const user = await this.usersService.findUserByName(input.username);
-    if (user && user.password === input.password) {
+  }) {
+    const user = await this.usersService.findUserByName(username);
+
+    if (user && (await compare(password, user.password))) {
       return {
-        userId: user.userId,
-        username: user.username,
+        userId: user.id,
+        username: user.email,
         role: user.role,
       };
     }
+
     return null;
   }
 
@@ -47,6 +53,10 @@ export class AuthService {
 
     const accessToken = await this.jwtService.signAsync(tokenPayload);
 
-    return { accessToken, username: user.username, userId: user.userId };
+    return {
+      accessToken,
+      userId: user.userId,
+      username: user.username,
+    };
   }
 }
